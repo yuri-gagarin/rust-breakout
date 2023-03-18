@@ -1,10 +1,11 @@
+mod ball;
+mod constants;
 use macroquad::prelude::{Vec2, KeyCode, Rect};
 use macroquad::prelude::{clear_background, get_frame_time, next_frame, screen_width, screen_height, is_key_down, vec2};
 use macroquad::shapes::draw_rectangle;
+use constants::{BLOCK_SIZE, PLAYER_SIZE, PLAYER_SPEED};
 
-const PLAYER_SIZE: Vec2 = Vec2::from_array([150f32, 40f32]);
-const BLOCK_SIZE: Vec2 = Vec2::from_array([100f32, 40f32]);
-const PLAYER_SPEED: f32 = 400.0;
+
 
 fn check_player_paddle_collison(player: &mut Player) {
     if player.rect.x < 0.0f32 {
@@ -23,7 +24,7 @@ struct Block {
 impl Player {
     pub fn new() -> Self {
         Self {
-            rect: Rect::new(screen_width() * 0.5f32 - PLAYER_SIZE.x * 0.5f32, screen_height() - 100f32, PLAYER_SIZE.x, PLAYER_SIZE.y)
+            rect: Rect::new(screen_width() * 0.5f32 - constants::PLAYER_SIZE.x * 0.5f32, screen_height() - 100f32, PLAYER_SIZE.x, PLAYER_SIZE.y)
         }
     }
     pub fn update(&mut self, dt: f32) {
