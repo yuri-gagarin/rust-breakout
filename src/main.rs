@@ -3,8 +3,10 @@ mod player;
 mod block;
 mod ball;
 mod helpers;
+use helpers::resolve_collision;
 //
-use macroquad::prelude::{clear_background, get_frame_time, next_frame, screen_height, screen_width, vec2};
+use macroquad::prelude::{clear_background, get_frame_time, is_key_pressed, next_frame, screen_height, screen_width, vec2};
+use macroquad::prelude::{KeyCode};
 use constants::{BLOCK_SIZE};
 use player::Player;
 use block::Block;
@@ -32,14 +34,21 @@ async fn main() {
     // draw the ball ///
     balls.push(Ball::new(vec2(screen_width() * 0.5f32, screen_height() * 0.5f32)));
     loop {
+        if is_key_pressed(KeyCode::Space) {
+            balls.push(Ball::new(vec2(screen_width() * 0.5f32, screen_height() * 0.5f32)));
+        }
         player.update(get_frame_time());
         // ball //
         for ball in balls.iter_mut() {
             ball.update(get_frame_time());
         }
+        for ball in balls.iter_mut() {
+            resolve_collision(&mut ball.rect, &mut ball.vector, &player.rect);
+        }
         clear_background(macroquad::prelude::WHITE);
-        // draw player //
         player.draw();
+        // 
+        // draw player //
         // iterate all blocks and draw //
         for block in blocks.iter() {
             block.draw();

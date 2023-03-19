@@ -4,8 +4,8 @@ use macroquad::prelude::{DARKGRAY};
 use super::constants::{BALL_SIZE, BALL_SPEED};
 
 pub struct Ball {
-    rect: Rect,
-    vector: Vec2,
+    pub rect: Rect,
+    pub vector: Vec2,
 }
 
 impl Ball {
@@ -24,6 +24,9 @@ impl Ball {
         }
         if self.rect.x > screen_width() - self.rect.w {
             self.vector.x = -1f32;
+        }
+        if self.rect.y < 0f32 {
+            self.vector.y = 1f32;
         }
     }
     pub fn draw(&self) {
