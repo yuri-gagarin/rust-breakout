@@ -44,7 +44,15 @@ async fn main() {
         }
         for ball in balls.iter_mut() {
             resolve_collision(&mut ball.rect, &mut ball.vector, &player.rect);
+            for block in blocks.iter_mut() {
+                if (resolve_collision(&mut ball.rect, &mut ball.vector, &block.rect)) {
+                    block.lives -= 1;
+                }
+            }
         }
+        // check if block shoud exists //
+        blocks.retain(|block| block.lives > 0);
+    
         clear_background(macroquad::prelude::WHITE);
         player.draw();
         // 
