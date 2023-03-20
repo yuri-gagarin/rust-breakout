@@ -10,6 +10,7 @@ pub fn check_player_paddle_collison(player: &mut Player) {
       player.rect.x = screen_width() - player.rect.w;
   }
 }
+/* 
 pub fn resolve_collision(first: &mut Rect, vector: &mut Vec2, second: &Rect) -> bool {
     /* 
     if let Some(_intersection) = first.intersect(*second) {
@@ -45,4 +46,29 @@ pub fn resolve_collision(first: &mut Rect, vector: &mut Vec2, second: &Rect) -> 
         }
     }
     false
+}
+*/
+pub fn resolve_collision(a: &mut Rect, vel: &mut Vec2, b: &Rect) -> bool {
+  // early exit
+  let intersection = match a.intersect(*b) {
+      Some(intersection) => intersection,
+      None => return false,
+  };
+  let a_center = a.point() + a.size() * 0.5f32;
+  let b_center = b.point() + b.size() * 0.5f32;
+  let to = b_center - a_center;
+  let to_signum = to.signum();
+  match intersection.w > intersection.h {
+      true => {
+          // bounce on y
+          a.y -= to_signum.y * intersection.h;
+          vel.y = -to_signum.y * vel.y.abs();
+      }
+      false => {
+          // bounce on x
+          a.x -= to_signum.x * intersection.w;
+          vel.x = -to_signum.x * vel.x.abs();
+      }
+  }
+  true
 }
