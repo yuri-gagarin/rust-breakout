@@ -6,11 +6,13 @@ use super::helpers::{check_player_paddle_collison};
 
 pub struct Player {
     pub rect: Rect,
+    pub lives: u16,
 }
 impl Player {
   pub fn new() -> Self {
       Self {
-          rect: Rect::new(screen_width() * 0.5f32 - PLAYER_SIZE.x * 0.5f32, screen_height() - 100f32, PLAYER_SIZE.x, PLAYER_SIZE.y)
+          rect: Rect::new(screen_width() * 0.5f32 - PLAYER_SIZE.x * 0.5f32, screen_height() - 100f32, PLAYER_SIZE.x, PLAYER_SIZE.y),
+          lives: 3
       }
   }
   pub fn update(&mut self, dt: f32) {

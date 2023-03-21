@@ -1,5 +1,5 @@
-use macroquad::prelude::{Rect, Vec2};
-use macroquad::prelude::{screen_width};
+use macroquad::prelude::{Font, Rect, TextParams, Vec2};
+use macroquad::prelude::{draw_text_ex, measure_text, screen_width};
 use super::player::{Player};
 
 pub fn check_player_paddle_collison(player: &mut Player) {
@@ -71,4 +71,24 @@ pub fn resolve_collision(a: &mut Rect, vel: &mut Vec2, b: &Rect) -> bool {
       }
   }
   true
+}
+
+// draw out score and lives //
+pub fn draw_score_text(score: u16, font: Font, font_size: u16, color: macroquad::prelude::Color) {
+    let score_text = format!("Score: {}", score);
+    let score_text_dim = measure_text(&score_text, Some(font), 30u16, 1.0f32);
+    draw_text_ex(
+        &score_text,
+        screen_width() * 0.5f32 - score_text_dim.width * 0.5f32,
+        40.0f32,
+        TextParams{font, font_size, color, ..Default::default()}
+    );
+}
+pub fn draw_lives_text(player_lives: u16, font: Font, font_size: u16, color: macroquad::prelude::Color) {
+    draw_text_ex(
+        &format!("Lives: {}", player_lives),
+        30.0f32, 
+        40.0f32, 
+        TextParams{font, font_size, color, ..Default::default()}
+    );
 }

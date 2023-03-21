@@ -5,8 +5,8 @@ mod ball;
 mod helpers;
 use helpers::resolve_collision;
 //
-use macroquad::prelude::{clear_background, draw_text_ex, get_frame_time, is_key_pressed, load_ttf_font, next_frame, screen_height, screen_width, vec2};
-use macroquad::prelude::{KeyCode,  TextParams };
+use macroquad::prelude::{clear_background, get_frame_time, is_key_pressed, load_ttf_font, next_frame, screen_height, screen_width, vec2};
+use macroquad::prelude::{KeyCode};
 use constants::{BLOCK_SIZE};
 use player::Player;
 use block::Block;
@@ -49,8 +49,10 @@ async fn main() {
             for block in blocks.iter_mut() {
                 if resolve_collision(&mut ball.rect, &mut ball.vector, &block.rect) {
                     block.lives -= 1;
+                    if  block.lives == 0 {
+                        score += 10; 
+                    }
                     score += 1;
-                    print!("Block lives: {}", block.lives);
                 }
             }
         }
@@ -68,7 +70,10 @@ async fn main() {
         for ball in balls.iter() {
             ball.draw();
         }
-        draw_text_ex(&format!("SCORE: {}", score), screen_width() * 0.5f32, 40.0f32, TextParams { font, font_size: 30u16, color: macroquad::prelude::BLACK, ..Default::default() });
+        // draw score text and lives text //
+        helpers::draw_score_text(score, font, 30u16, macroquad::prelude::BLACK);
+        helpers::draw_lives_text(player.lives, font, 30u16, macroquad::prelude::BLACK);
+        //
         next_frame().await
     }
 }
