@@ -12,9 +12,19 @@ use player::Player;
 use block::Block;
 use ball::Ball;
 //
+
+pub enum GameState {
+    Menu,
+    Game,
+    Completed,
+    Failed,
+}
+
 #[macroquad::main("Breakout")]
 async fn main() {
     let font = load_ttf_font("res/Heebo-Variable.ttf").await.unwrap();
+    // game state //
+    let mut game_state = GameState::Menu;
     let mut score: u16 = 0;
     let mut player: Player = Player::new();
     let mut blocks: Vec<Block> = Vec::new();
@@ -56,6 +66,14 @@ async fn main() {
                 }
             }
         }
+        // ball should exist only if in screen //
+        // calculate players lives //
+        let balls_len = balls.len(); 
+        balls.retain(|ball| ball.rect.y < screen_height());
+        let removed_balls = balls_len - balls.len();
+        if removed_balls > 0 {
+            player.lives -= 1;
+        }
         // check if block shoud exists //
         blocks.retain(|block| block.lives > 0);
     
@@ -70,9 +88,24 @@ async fn main() {
         for ball in balls.iter() {
             ball.draw();
         }
-        // draw score text and lives text //
-        helpers::draw_score_text(score, font, 30u16, macroquad::prelude::BLACK);
-        helpers::draw_lives_text(player.lives, font, 30u16, macroquad::prelude::BLACK);
+
+        match game_state {
+            GameState::Menu => {
+                helpers::draw_main_text("Press SPACE BAR to start", font, 30u16, macroquad::prelude::BLACK);
+            },
+            GameState::Game => {
+                // draw score text and lives text //
+                helpers::draw_score_text(score, font, 30u16, macroquad::prelude::BLACK);
+                helpers::draw_lives_text(player.lives, font, 30u16, macroquad::prelude::BLACK);
+            },
+            GameState::Completed => {
+                helpers::draw_main_text(&format!("You WON! Score: {}", score), font, 30u16, macroquad::prelude::BLACK);
+            },
+            GameState::Failed => {
+                helpers::draw_main_text(&format!("GAME OVER! Score: {}", score), font, 30u16, macroquad::prelude::BLACK);
+            }
+        }
+      
         //
         next_frame().await
     }
